@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--    Dates - Postgresql-->
+    <property name="today" value="now()" dbms="postgresql"/>
+    <property name="twoDaysAgo" value="now() - INTERVAL '2' DAY" dbms="postgresql"/>
+    <property name="twoDaysLater" value="now() + INTERVAL '2' DAY" dbms="postgresql"/>
+    <property name="weekAfter" value="now() + INTERVAL '7' DAY" dbms="postgresql"/>
+
+    <!--    Dates - HSQLDB-->
+    <property name="today" value="now()" dbms="hsqldb"/>
+    <property name="twoDaysAgo" value="date_sub(now(), INTERVAL '2' DAY)" dbms="hsqldb"/>
+    <property name="twoDaysLater" value="date_add(now(), INTERVAL '2' DAY)" dbms="hsqldb"/>
+    <property name="weekAfter" value="date_add(now(), INTERVAL '7' DAY)" dbms=" hsqldb"/>
+
+    <!--    UUID functions-->
+    <property name="uuid_function" value="gen_random_uuid()" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid()" dbms="hsqldb"/>
+
+    <!--    User IDs-->
+    <property name="adminId" value="60885987-1b61-4247-94c7-dff348347f93"/>
+    <property name="dev1Id" value="c75888d4-419e-4ee5-aa08-1fe45be775d0"/>
+    <property name="dev2Id" value="4b93fae1-0a2a-4131-bffc-d5a4cc64245f"/>
+
+    <!--    Project IDs-->
+    <property name="project1Id" value="f175c3e3-ced4-409c-9ab9-3273c818b5c8"/>
+    <property name="project2Id" value="975421d6-10fc-4d9c-88db-8ec2a9535e49"/>
+
+    <!--    Task IDs-->
+    <property name="task1Id" value="b3a5212d-c28f-4165-ac0f-fd3bb9b999d2"/>
+    <property name="task2Id" value="93ec81dc-162d-4943-a2f4-94b7ff08fb99"/>
+    <property name="task3Id" value="d7cf0b3b-687b-4dc5-8156-d7ce41271bcd"/>
+    <property name="task4Id" value="0bfb1b07-3f77-4f07-a36e-e0aaea572006"/>
+    <property name="task5Id" value="a1a8e49e-17dd-460c-922d-3dcf89afdd76"/>
+    <property name="task6Id" value="d3191c5a-87a7-4496-aad2-1a62ddd0b494"/>
+
+    <changeSet id="1" author="jmix-pm" context="!cuba, !prod">
+
+        <insert tableName="USER_" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" value="${dev1Id}"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="dev1"/>
+            <column name="PASSWORD" value="{noop}admin"/>
+            <column name="FIRST_NAME" value="Alex"/>
+            <column name="LAST_NAME" value="Hamilton"/>
+            <column name="ACTIVE" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="dev1"/>
+            <column name="ROLE_CODE" value="ui-minimal"/>
+            <column name="ROLE_TYPE" value="resource"/>
+        </insert>
+
+        <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="dev1"/>
+            <column name="ROLE_CODE" value="tasks-viewer"/>
+            <column name="ROLE_TYPE" value="resource"/>
+        </insert>
+
+    </changeSet>
+    <changeSet id="2" author="jmix-pm" context="!cuba, !prod">
+
+        <insert tableName="USER_" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" value="${dev2Id}"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="dev2"/>
+            <column name="PASSWORD" value="{noop}admin"/>
+            <column name="FIRST_NAME" value="Peter"/>
+            <column name="LAST_NAME" value="Johnson"/>
+            <column name="ACTIVE" valueBoolean="true"/>
+        </insert>
+
+    </changeSet>
+    <changeSet id="3" author="jmix-pm" context="!cuba, !prod">
+        <insert tableName="PROJECT">
+            <column name="ID" value="${project1Id}"/>
+            <column name="NAME">Jmix trainings</column>
+            <column name="START_DATE" valueDate="${twoDaysAgo}"/>
+            <column name="END_DATE" valueDate="${weekAfter}"/>
+            <column name="MANAGER_ID" value="${dev1Id}"/>
+            <column name="STATUS" value="10"/>
+        </insert>
+
+        <insert tableName="PROJECT">
+            <column name="ID" value="${project2Id}"/>
+            <column name="NAME">Release</column>
+            <column name="START_DATE" valueDate="${today}"/>
+            <column name="END_DATE" valueDate="${weekAfter}"/>
+            <column name="MANAGER_ID" value="${dev2Id}"/>
+            <column name="STATUS" value="10"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task1Id}"/>
+            <column name="NAME" value="Prepare Script"/>
+            <column name="PROJECT_ID" value="${project1Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev1Id}"/>
+            <column name="START_DATE" valueDate="${twoDaysLater}"/>
+            <column name="ESTIMATED_EFFORTS" value="4"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task2Id}"/>
+            <column name="NAME" value="Prepare Presentation"/>
+            <column name="PROJECT_ID" value="${project1Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev2Id}"/>
+            <column name="START_DATE" valueDate="${today}"/>
+            <column name="ESTIMATED_EFFORTS" value="3"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task3Id}"/>
+            <column name="NAME" value="Prepare Video"/>
+            <column name="PROJECT_ID" value="${project1Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev1Id}"/>
+            <column name="START_DATE" valueDate="${twoDaysAgo}"/>
+            <column name="ESTIMATED_EFFORTS" value="6"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task4Id}"/>
+            <column name="NAME" value="Write code"/>
+            <column name="PROJECT_ID" value="${project2Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev2Id}"/>
+            <column name="START_DATE" valueDate="${twoDaysAgo}"/>
+            <column name="ESTIMATED_EFFORTS" value="4"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task5Id}"/>
+            <column name="NAME" value="Force push to origin main"/>
+            <column name="PROJECT_ID" value="${project2Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev1Id}"/>
+            <column name="START_DATE" valueDate="${today}"/>
+            <column name="ESTIMATED_EFFORTS" value="1"/>
+        </insert>
+
+        <insert tableName="TASK_">
+            <column name="ID" value="${task6Id}"/>
+            <column name="NAME" value="Refresh Linkedin and HH CVs"/>
+            <column name="PROJECT_ID" value="${project2Id}"/>
+            <column name="ASSIGNEE_ID" value="${dev2Id}"/>
+            <column name="START_DATE" valueDate="${twoDaysLater}"/>
+            <column name="ESTIMATED_EFFORTS" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="jmix-pm" context="!cuba, !prod">
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${twoDaysAgo}"/>
+            <column name="TASK_ID" value="${task1Id}"/>
+            <column name="USER_ID" value="${dev1Id}"/>
+            <column name="TIME_SPENT" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${today}"/>
+            <column name="TASK_ID" value="${task1Id}"/>
+            <column name="USER_ID" value="${dev2Id}"/>
+            <column name="TIME_SPENT" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${twoDaysAgo}"/>
+            <column name="TASK_ID" value="${task2Id}"/>
+            <column name="USER_ID" value="${dev1Id}"/>
+            <column name="TIME_SPENT" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${today}"/>
+            <column name="TASK_ID" value="${task4Id}"/>
+            <column name="USER_ID" value="${dev2Id}"/>
+            <column name="TIME_SPENT" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${today}"/>
+            <column name="TASK_ID" value="${task5Id}"/>
+            <column name="USER_ID" value="${dev1Id}"/>
+            <column name="TIME_SPENT" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="TIME_ENTRY">
+            <column name="ID" valueComputed="${uuid_function}"/>
+            <column name="ENTRY_DATE" valueDate="${today}"/>
+            <column name="TASK_ID" value="${task5Id}"/>
+            <column name="USER_ID" value="${dev2Id}"/>
+            <column name="TIME_SPENT" valueNumeric="2"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

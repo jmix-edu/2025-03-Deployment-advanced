@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://projectDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="projectDc"
+                  class="com.company.jmixpm.entity.Project">
+            <fetchPlan extends="_base">
+                <property name="manager" fetchPlan="_instance_name"/>
+                <property name="tasks" fetchPlan="_base">
+                    <property name="assignee" fetchPlan="_instance_name"/>
+                </property>
+            </fetchPlan>
+            <loader id="projectDl"/>
+            <collection id="tasksDc" property="tasks"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="projectDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+                <responsiveStep minWidth="40em" columns="2"/>
+            </responsiveSteps>
+            <textField id="nameField" property="name"/>
+            <datePicker id="startDateField" property="startDate"/>
+            <datePicker id="endDateField" property="endDate"/>
+            <select id="statusField" property="status"/>
+            <entityPicker id="managerField" property="manager">
+                <actions>
+                    <action id="entityLookupAction" type="entity_lookup"/>
+                    <action id="entityClearAction" type="entity_clear"/>
+                </actions>
+            </entityPicker>
+        </formLayout>
+        <h4 text="msg://com.company.jmixpm.entity/Project.tasks"/>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button action="tasksDataGrid.createAction"/>
+            <button action="tasksDataGrid.editAction"/>
+            <button action="tasksDataGrid.removeAction"/>
+        </hbox>
+        <dataGrid id="tasksDataGrid" dataContainer="tasksDc" width="100%" minHeight="20em">
+            <actions>
+                <action id="createAction" type="list_create">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="editAction" type="list_edit">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns>
+                <column property="name"/>
+                <column property="startDate"/>
+                <column property="estimatedEfforts"/>
+                <column property="assignee"/>
+            </columns>
+        </dataGrid>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
